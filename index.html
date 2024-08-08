@@ -6,7 +6,7 @@
     <title>Library</title>
     <link rel="stylesheet" href="styles/normalize.css" />
     <link rel="stylesheet" href="styles/style.css" />
-    <script src="index.js" defer></script>
+    <script src="index.js" type="module" defer></script>
   </head>
   <body>
     <header class="header">
@@ -16,22 +16,19 @@
       </div>
       <button class="add-book">
         <div class="icon">+</div>
-        <div class="text">ADD BOOK</div>
+        <div class="text">NEW BOOK</div>
       </button>
     </header>
     <main class="main"></main>
     <dialog>
       <form method="dialog">
         <label for="title-input">Title</label>
-        <input type="text" id="title-input" />
+        <input type="text" id="title-input" autocomplete="off" required />
 
         <label for="author-input">Author</label>
-        <input type="text" id="author-input" />
+        <input type="text" id="author-input" autocomplete="off" required />
 
-        <div class="readed">
-          <input type="checkbox" id="is-readed" />
-          <label for="is-readed">Readed</label>
-        </div>
+        <button class="read-button">Readed</button>
 
         <button class="cancel" type="reset">Cancel</button>
         <button type="submit">Confirm</button>
