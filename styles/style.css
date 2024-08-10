@@ -9,7 +9,7 @@ body {
     align-items: center;
     height: 80px;
     padding: 0 30px;
-    background-color: #302228;
+    background-color: #3C1A23;
 }
 
 .header-title {
@@ -71,14 +71,13 @@ body {
     justify-content: center;
     align-items: center;
     justify-items: center;
-    grid-template-columns: repeat(4, 280px);
+    grid-template-columns: repeat(auto-fill, 280px);
     grid-auto-rows: 200px;
     grid-auto-flow: row;
     gap: 20px 20px;
-    padding-top: 100px;
+    padding: 100px 20px;
     background-color: #D5C4AE; 
-    min-height: calc(100vh - 180px); 
-    width: 100%; 
+    min-height: calc(100vh - 280px); 
 }
 
 .book-card {
@@ -104,7 +103,7 @@ body {
 }
 
 .book-text {
-    margin-top: 10px;
+    margin-top: 15px;
     width: 50%;
     color: #302228;
 }
@@ -112,7 +111,7 @@ body {
 .book-title, .book-author {
     width: 90%;
     max-height: 37px;
-    margin: 0;
+    margin: 2px 0;
     padding: 0 7px;
     overflow: hidden;
     overflow-wrap: break-word;
@@ -130,13 +129,6 @@ body {
     width: 140px;
 }
 
-.read-button-icon,
-.remove-button-icon {
-    border: none;
-    outline: none;
-    background-color: transparent;
-}
-
 .read-icon,
 .remove-icon {
     background-color: transparent;
@@ -146,16 +138,18 @@ body {
 
 .read-icon {
     font-size: 25px;
+    --ionicon-stroke-width: 60px;
 }
 
 .remove-icon {
-    font-size: 28px;
-    padding-bottom: 2px;
-    color: #630e1d;
+    font-size: 30px;
+    margin-top: 2px;
+    color: #b1102d;
+    --ionicon-stroke-width: 50px;
 }
 
 ion-icon.readed {
-    color: rgb(0, 85, 0);
+    color: #02c502;
 }
 
 dialog {
@@ -197,8 +191,8 @@ form input[type="text"] {
 }
 
 button.readed {
-    border: #46596F;
-    background-color: #46596F;
+    border: #5290d6;
+    background-color: #5290d6;
 }
 
 button[type="reset"],
