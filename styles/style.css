@@ -152,6 +152,8 @@ ion-icon.readed {
     color: #02c502;
 }
 
+/* search dialog */
+
 dialog {
     border-radius: 10px;
     background-color: #302228;
@@ -206,4 +208,70 @@ button[type="submit"] {
     color: #D5C4AE;
     font-weight: 600;
     cursor: pointer;
+}
+
+/* Results dialog */
+
+.results {
+    width: 600px;
+    height: 600px;
+}
+
+.result-div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 80px;
+    border: 2px solid white;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+.result-div:hover {
+    background-color: #4d353f;
+    cursor: pointer;
+}
+
+.results-title {
+    margin: 0;
+    padding: 10px 0 25px 10px;
+}
+
+.result-title, 
+.result-author {
+    width: 170px;
+    height: 40px;
+    overflow: hidden;
+    text-align: center;
+}
+
+.result-title{
+    padding-left: 10px;
+}
+
+.result-author,
+.result-pages {
+    padding-left: 10px;
+}
+
+.result-pages {
+    padding-left: 60px;
+}
+
+.result-img {
+    height: 100%;
+    width: auto;
+    margin-left: auto;
+}
+
+/* Error dialog */
+
+.error-title {
+    margin: 10px 0;
+}
+
+.error-message {
+    margin-bottom: 20px;
 }
