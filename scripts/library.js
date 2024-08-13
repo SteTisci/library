@@ -1,6 +1,7 @@
 import { getBookInfo } from "./bookAPI.js";
+import { resultDiv } from "../index.js";
 
-export const library = [];
+const library = [];
 
 // Book constructor
 function Book(title, author, pages, img, isReaded) {
@@ -11,7 +12,7 @@ function Book(title, author, pages, img, isReaded) {
   this.isReaded = isReaded;
 }
 
-export async function searchBook(title, author, isReaded) {
+async function searchBook(title, author, isReaded, bookIndexPromise) {
   try {
     const data = await getBookInfo(`${title}${author}`);
 
@@ -19,24 +20,49 @@ export async function searchBook(title, author, isReaded) {
     const bookInfo = data.items.map((info) => {
       return {
         title: info.volumeInfo.title,
-        author: info.volumeInfo.authors,
+        author: info.volumeInfo.authors ? info.volumeInfo.authors : "Unknown",
         pages: info.volumeInfo.pageCount,
-        // stock image cover in case a book doesn't have one
+        // stock image thumbnail in case a book doesn't have one
         imgLink: info.volumeInfo.imageLinks ? info.volumeInfo.imageLinks.thumbnail : `./image/stock-book-img.jpg`,
       };
     });
 
-    // TODO: fare scegliere all'utente il libro da inserire nella pagina web visto che bookInfo contiene piu risultati
-    // TODO: aggiungere la scelta alla libreria -> gestire l'elemento scelto da bookInfo
+    showResults(bookInfo);
+
+    const index = await bookIndexPromise;
 
     // push the book info into the library array
-    addToLibrary(bookInfo[0].title, bookInfo[0].author[0], bookInfo[0].pages, bookInfo[0].imgLink, isReaded);
+    addToLibrary(
+      bookInfo[index].title,
+      bookInfo[index].author[0],
+      bookInfo[index].pages,
+      bookInfo[index].imgLink,
+      isReaded
+    );
   } catch (error) {
     throw error;
   }
+}
+
+// Content of the Results dialog to make the user choose the desired book
+function showResults(bookInfo) {
+  // Reset the results before adding new ones
+  resultDiv.innerHTML = "";
+
+  bookInfo.forEach((book, index) => {
+    const title = `<p class="result-title">${book.title}</p>`;
+    const author = `<p class="result-author">${book.author}</p>`;
+    const pages = `<p class="result-pages">${book.pages}</p>`;
+    const img = `<img src="${book.imgLink}" class="result-img" />`;
+    const div = `<div class="result-div ${index}">${title} ${author} ${pages} ${img}</div>`;
+
+    resultDiv.innerHTML += div;
+  });
 }
 
 function addToLibrary(title, author, pages, img, isReaded) {
   const index = library.length;
   library[index] = new Book(title, author, pages, img, isReaded);
 }
+
+export { library, searchBook };
