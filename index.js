@@ -2,7 +2,11 @@ import { library, searchBook } from "./scripts/library.js";
 import { addToLocalStorage, loadFromLocalStorage } from "./scripts/localStorage.js";
 
 const main = document.querySelector(".main");
-const dialog = document.querySelector(".book-search");
+const searchDialog = document.querySelector(".book-search");
+const resultsDialog = document.querySelector(".results");
+const resultDiv = document.querySelector(".results-container");
+const errorDialog = document.querySelector(".error-dialog");
+const dialogReturn = document.querySelector(".return");
 const addBookBtn = document.querySelector(".add-book");
 const readBtn = document.querySelector(".read-button");
 const confirmBtn = document.querySelector("button[type='submit']");
@@ -16,16 +20,37 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 readBtn.addEventListener("click", (e) => {
-  // Prevent the dialog from closing when the button is clicked
+  // Prevent the dialog from closing when the readed button is clicked
   e.preventDefault();
   toggleReaded(readBtn);
 });
-addBookBtn.addEventListener("click", () => dialog.showModal());
-cancelBtn.addEventListener("click", () => dialog.close());
+addBookBtn.addEventListener("click", () => searchDialog.showModal());
+cancelBtn.addEventListener("click", () => searchDialog.close());
 
-// TODO: dialog per vedere i risutati della ricerca dopo che confirmBtn viene premuto
-confirmBtn.addEventListener("click", async () => await addBook());
+// when the error dialog is closed it opens the search one
+dialogReturn.addEventListener("click", () => {
+  errorDialog.close();
+  searchDialog.showModal();
+});
 
+confirmBtn.addEventListener("click", async () => {
+  // Show the results dialog
+  resultsDialog.showModal();
+
+  // Create a Promise that resolves when the user selects a book
+  const bookIndex = new Promise((resolve) => {
+    resultDiv.addEventListener("click", (e) => {
+      const index = e.target.closest(".result-div").classList[1];
+      resultsDialog.close();
+      resolve(index);
+    });
+  });
+
+  // Add the book with the selected index
+  await addBook(bookIndex);
+});
+
+// Manage the read and the remove button in the bookCard
 main.addEventListener("click", (e) => {
   const bookCard = e.target.closest(".book-card");
   const readIcon = e.target.closest(".read-icon");
@@ -39,12 +64,12 @@ main.addEventListener("click", (e) => {
   }
 });
 
-async function addBook() {
+async function addBook(bookIndexPromise) {
   const isReaded = readBtn.classList.contains("readed") ? true : false;
 
   if (titleInput.value && authorInput.value) {
     try {
-      await searchBook(titleInput.value, authorInput.value, isReaded);
+      await searchBook(titleInput.value, authorInput.value, isReaded, bookIndexPromise);
 
       // Reset the inputs after every search
       titleInput.value = "";
@@ -53,8 +78,10 @@ async function addBook() {
       appendBookInfo();
     } catch (error) {
       console.error(error);
-      // TODO: gestione dialog errore in caso di libro non trovato
-      return;
+      // open an error dialog if no results match the search
+      searchDialog.close();
+      resultsDialog.close();
+      errorDialog.showModal();
     }
   }
 }
@@ -97,10 +124,6 @@ function removeBook(book) {
   appendBookInfo();
 }
 
-function toggleReaded(element) {
-  element.classList.toggle("readed");
-}
-
 // Update the readed status
 function updateBookStatus(book, readIcon) {
   const title = book.querySelector(".book-title");
@@ -113,4 +136,9 @@ function updateBookStatus(book, readIcon) {
   addToLocalStorage();
 }
 
-// TODO: commenti generali per maggiore leggibilita'
+function toggleReaded(element) {
+  element.classList.toggle("readed");
+}
+
+// I need the dialog div that show the books results in the library.js to add them in it
+export { resultDiv };
