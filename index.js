@@ -37,6 +37,8 @@ confirmBtn.addEventListener("click", async () => {
   if (titleInput.value && authorInput.value) {
     resultsDialog.showModal();
 
+    // FIXME: nel caso non si scelga nessun libro la promessa viene chiamata piu volte
+
     // Create a Promise that resolves when the user selects a book
     const bookIndex = new Promise((resolve) => {
       resultContainer.addEventListener("click", (e) => {
