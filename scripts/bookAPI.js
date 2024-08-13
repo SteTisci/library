@@ -1,5 +1,5 @@
 // Api call to get the data for the searched book
-export const getBookInfo = async function (parameters) {
+async function getBookInfo(parameters) {
   const url = `https://www.googleapis.com/books/v1/volumes?q=${parameters}`;
 
   const response = await fetch(url);
@@ -9,4 +9,6 @@ export const getBookInfo = async function (parameters) {
   }
   const data = await response.json();
   return data;
-};
+}
+
+export { getBookInfo };
