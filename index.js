@@ -4,7 +4,7 @@ import { addToLocalStorage, loadFromLocalStorage } from "./scripts/localStorage.
 const main = document.querySelector(".main");
 const searchDialog = document.querySelector(".book-search");
 const resultsDialog = document.querySelector(".results");
-const resultDiv = document.querySelector(".results-container");
+const resultContainer = document.querySelector(".results-container");
 const errorDialog = document.querySelector(".error-dialog");
 const dialogReturn = document.querySelector(".return");
 const addBookBtn = document.querySelector(".add-book");
@@ -34,12 +34,11 @@ dialogReturn.addEventListener("click", () => {
 });
 
 confirmBtn.addEventListener("click", async () => {
-  // Show the results dialog
   resultsDialog.showModal();
 
   // Create a Promise that resolves when the user selects a book
   const bookIndex = new Promise((resolve) => {
-    resultDiv.addEventListener("click", (e) => {
+    resultContainer.addEventListener("click", (e) => {
       const index = e.target.closest(".result-div").classList[1];
       resultsDialog.close();
       resolve(index);
@@ -49,6 +48,8 @@ confirmBtn.addEventListener("click", async () => {
   // Add the book with the selected index
   await addBook(bookIndex);
 });
+
+// TODO: aggiungere un pulsante per tornare indietro in caso nessun libro corrisponda ai criteri scelti
 
 // Manage the read and the remove button in the bookCard
 main.addEventListener("click", (e) => {
@@ -141,4 +142,4 @@ function toggleReaded(element) {
 }
 
 // I need the dialog div that show the books results in the library.js to add them in it
-export { resultDiv };
+export { resultContainer };
