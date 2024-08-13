@@ -34,19 +34,21 @@ dialogReturn.addEventListener("click", () => {
 });
 
 confirmBtn.addEventListener("click", async () => {
-  resultsDialog.showModal();
+  if (titleInput.value && authorInput.value) {
+    resultsDialog.showModal();
 
-  // Create a Promise that resolves when the user selects a book
-  const bookIndex = new Promise((resolve) => {
-    resultContainer.addEventListener("click", (e) => {
-      const index = e.target.closest(".result-div").classList[1];
-      resultsDialog.close();
-      resolve(index);
+    // Create a Promise that resolves when the user selects a book
+    const bookIndex = new Promise((resolve) => {
+      resultContainer.addEventListener("click", (e) => {
+        const index = e.target.closest(".result-div").classList[1];
+        resultsDialog.close();
+        resolve(index);
+      });
     });
-  });
 
-  // Add the book with the selected index
-  await addBook(bookIndex);
+    // Add the book with the selected index
+    await addBook(bookIndex);
+  }
 });
 
 // TODO: aggiungere un pulsante per tornare indietro in caso nessun libro corrisponda ai criteri scelti
@@ -68,22 +70,20 @@ main.addEventListener("click", (e) => {
 async function addBook(bookIndexPromise) {
   const isReaded = readBtn.classList.contains("readed") ? true : false;
 
-  if (titleInput.value && authorInput.value) {
-    try {
-      await searchBook(titleInput.value, authorInput.value, isReaded, bookIndexPromise);
+  try {
+    await searchBook(titleInput.value, authorInput.value, isReaded, bookIndexPromise);
 
-      // Reset the inputs after every search
-      titleInput.value = "";
-      authorInput.value = "";
+    // Reset the inputs after every search
+    titleInput.value = "";
+    authorInput.value = "";
 
-      appendBookInfo();
-    } catch (error) {
-      console.error(error);
-      // open an error dialog if no results match the search
-      searchDialog.close();
-      resultsDialog.close();
-      errorDialog.showModal();
-    }
+    appendBookInfo();
+  } catch (error) {
+    console.error(error);
+    // open an error dialog if no results match the search
+    searchDialog.close();
+    resultsDialog.close();
+    errorDialog.showModal();
   }
 }
 
