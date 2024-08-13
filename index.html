@@ -20,6 +20,7 @@
       </button>
     </header>
     <main class="main"></main>
+
     <dialog class="book-search">
       <form method="dialog">
         <label for="title-input">Title</label>
@@ -33,6 +34,17 @@
         <button class="cancel" type="reset">Cancel</button>
         <button type="submit">Confirm</button>
       </form>
+    </dialog>
+
+    <dialog class="results">
+      <h2 class="results-title">Results</h2>
+      <div class="results-container"></div>
+    </dialog>
+
+    <dialog class="error-dialog">
+      <h1 class="error-title">Oops!</h1>
+      <p class="error-message">no books found matching your search...</p>
+      <button type="reset" class="return">Return</button>
     </dialog>
 
     <!-- ionicons modules -->
