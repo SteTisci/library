@@ -1,5 +1,5 @@
 import { getBookInfo } from "./bookAPI.js";
-import { resultDiv } from "../index.js";
+import { resultContainer } from "../index.js";
 
 const library = [];
 
@@ -28,13 +28,12 @@ async function searchBook(title, author, isReaded, bookIndexPromise) {
     });
 
     showResults(bookInfo);
-
     const index = await bookIndexPromise;
 
     // push the book info into the library array
     addToLibrary(
       bookInfo[index].title,
-      bookInfo[index].author[0],
+      bookInfo[index].author,
       bookInfo[index].pages,
       bookInfo[index].imgLink,
       isReaded
@@ -47,7 +46,7 @@ async function searchBook(title, author, isReaded, bookIndexPromise) {
 // Content of the Results dialog to make the user choose the desired book
 function showResults(bookInfo) {
   // Reset the results before adding new ones
-  resultDiv.innerHTML = "";
+  resultContainer.innerHTML = "";
 
   bookInfo.forEach((book, index) => {
     const title = `<p class="result-title">${book.title}</p>`;
@@ -56,7 +55,7 @@ function showResults(bookInfo) {
     const img = `<img src="${book.imgLink}" class="result-img" />`;
     const div = `<div class="result-div ${index}">${title} ${author} ${pages} ${img}</div>`;
 
-    resultDiv.innerHTML += div;
+    resultContainer.innerHTML += div;
   });
 }
 
