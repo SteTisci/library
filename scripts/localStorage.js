@@ -1,12 +1,12 @@
 import { library } from "./library.js";
 
 // Saves the books in the localStorage
-export function addToLocalStorage() {
+function addToLocalStorage() {
   localStorage.setItem("books", JSON.stringify(library));
 }
 
 // Load the books from the localStorage an push them in the library array
-export function loadFromLocalStorage() {
+function loadFromLocalStorage() {
   const booksFromStorage = localStorage.getItem("books");
 
   if (booksFromStorage) {
@@ -14,3 +14,5 @@ export function loadFromLocalStorage() {
     storedBooks.forEach((book) => library.push(book));
   }
 }
+
+export { addToLocalStorage, loadFromLocalStorage };
