@@ -217,11 +217,19 @@ button[type="submit"] {
     height: 600px;
 }
 
+.results-title {
+    margin: 0;
+    padding: 10px 0 25px 10px;
+}
+
+.results-container {
+    width: 100%;
+}
+
 .result-div {
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: 100%;
     height: 80px;
     border: 2px solid white;
     border-radius: 5px;
@@ -232,11 +240,6 @@ button[type="submit"] {
 .result-div:hover {
     background-color: #4d353f;
     cursor: pointer;
-}
-
-.results-title {
-    margin: 0;
-    padding: 10px 0 25px 10px;
 }
 
 .result-title, 
@@ -257,13 +260,21 @@ button[type="submit"] {
 }
 
 .result-pages {
-    padding-left: 60px;
+    padding-left: 50px;
 }
 
 .result-img {
     height: 100%;
     width: auto;
     margin-left: auto;
+}
+
+.return {
+    margin-top: 5px;
+}
+
+.return:hover {
+    background-color: #4d353f;
 }
 
 /* Error dialog */
