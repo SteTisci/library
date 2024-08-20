@@ -1,5 +1,4 @@
 import { getBookInfo } from "./bookAPI.js";
-import { resultContainer } from "../index.js";
 
 const library = [];
 
@@ -12,12 +11,13 @@ function Book(title, author, pages, img, isReaded) {
   this.isReaded = isReaded;
 }
 
-async function searchBook(title, author, isReaded, bookIndexPromise) {
+// Send the request to the API and retrive all the results of the searched book
+async function getBookResults(title, author) {
   try {
     const data = await getBookInfo(`${title}${author}`);
 
     // Object containing the data for the book card
-    const bookInfo = data.items.map((info) => {
+    const bookResults = data.items.map((info) => {
       return {
         title: info.volumeInfo.title,
         author: info.volumeInfo.authors ? info.volumeInfo.authors : "Unknown",
@@ -26,37 +26,28 @@ async function searchBook(title, author, isReaded, bookIndexPromise) {
         imgLink: info.volumeInfo.imageLinks ? info.volumeInfo.imageLinks.thumbnail : `./image/stock-book-img.jpg`,
       };
     });
-
-    showResults(bookInfo);
-    const index = await bookIndexPromise;
-
-    // push the book info into the library array
-    addToLibrary(
-      bookInfo[index].title,
-      bookInfo[index].author,
-      bookInfo[index].pages,
-      bookInfo[index].imgLink,
-      isReaded
-    );
+    return bookResults;
   } catch (error) {
     throw error;
   }
 }
 
-// Content of the Results dialog to make the user choose the desired book
-function showResults(bookInfo) {
-  // Reset the results before adding new ones
-  resultContainer.innerHTML = "";
+// Shows the books found by the request sent to the API
+function showResults(bookResults) {
+  let content = "";
+  const returnBtn = `<button class="return" type="reset">Go Back</button>`;
 
-  bookInfo.forEach((book, index) => {
+  bookResults.forEach((book, index) => {
     const title = `<p class="result-title">${book.title}</p>`;
     const author = `<p class="result-author">${book.author}</p>`;
     const pages = `<p class="result-pages">${book.pages}</p>`;
     const img = `<img src="${book.imgLink}" class="result-img" />`;
     const div = `<div class="result-div ${index}">${title} ${author} ${pages} ${img}</div>`;
 
-    resultContainer.innerHTML += div;
+    content += div;
   });
+  content += returnBtn;
+  return content;
 }
 
 function addToLibrary(title, author, pages, img, isReaded) {
@@ -64,4 +55,4 @@ function addToLibrary(title, author, pages, img, isReaded) {
   library[index] = new Book(title, author, pages, img, isReaded);
 }
 
-export { library, searchBook };
+export { library, getBookResults, showResults, addToLibrary };

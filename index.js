@@ -1,19 +1,20 @@
-import { library, searchBook } from "./scripts/library.js";
+import { library, getBookResults, showResults, addToLibrary } from "./scripts/library.js";
 import { addToLocalStorage, loadFromLocalStorage } from "./scripts/localStorage.js";
 
-const main = document.querySelector(".main");
-const searchDialog = document.querySelector(".book-search");
-const resultsDialog = document.querySelector(".results");
-const resultContainer = document.querySelector(".results-container");
-const errorDialog = document.querySelector(".error-dialog");
-const dialogReturn = document.querySelector(".return");
-const addBookBtn = document.querySelector(".add-book");
-const readBtn = document.querySelector(".read-button");
-const confirmBtn = document.querySelector("button[type='submit']");
-const cancelBtn = document.querySelector(".cancel");
-const titleInput = document.querySelector("#title-input");
-const authorInput = document.querySelector("#author-input");
+const main = document.querySelector(".main"),
+  searchDialog = document.querySelector(".book-search"),
+  resultsDialog = document.querySelector(".results"),
+  resultContainer = document.querySelector(".results-container"),
+  errorDialog = document.querySelector(".error-dialog"),
+  dialogReturn = document.querySelector(".return"),
+  addBookBtn = document.querySelector(".add-book"),
+  readBtn = document.querySelector(".read-button"),
+  confirmBtn = document.querySelector("button[type='submit']"),
+  cancelBtn = document.querySelector(".cancel"),
+  titleInput = document.querySelector("#title-input"),
+  authorInput = document.querySelector("#author-input");
 
+// Loads the books present in the library on the page when it has been loaded
 document.addEventListener("DOMContentLoaded", () => {
   loadFromLocalStorage();
   appendBookInfo();
@@ -33,29 +34,53 @@ dialogReturn.addEventListener("click", () => {
   searchDialog.showModal();
 });
 
+// when the user searches for a book, a dialog opens with the results
+// or shown an error message if the book is not found
 confirmBtn.addEventListener("click", async () => {
-  if (titleInput.value && authorInput.value) {
-    resultsDialog.showModal();
+  try {
+    if (titleInput.value && authorInput.value) {
+      const results = await getBookResults(titleInput.value, authorInput.value);
 
-    // FIXME: nel caso non si scelga nessun libro la promessa viene chiamata piu volte
-
-    // Create a Promise that resolves when the user selects a book
-    const bookIndex = new Promise((resolve) => {
-      resultContainer.addEventListener("click", (e) => {
-        const index = e.target.closest(".result-div").classList[1];
-        resultsDialog.close();
-        resolve(index);
-      });
-    });
-
-    // Add the book with the selected index
-    await addBook(bookIndex);
+      resultsDialog.showModal();
+      resultContainer.innerHTML = "";
+      resultContainer.innerHTML = showResults(results);
+      // Reset the inputs after every search
+      titleInput.value = "";
+      authorInput.value = "";
+    }
+  } catch (error) {
+    console.error(error);
+    // open an error dialog if no results match the search
+    searchDialog.close();
+    resultsDialog.close();
+    errorDialog.showModal();
   }
 });
 
-// TODO: aggiungere un pulsante per tornare indietro in caso nessun libro corrisponda ai criteri scelti
+// Manages the selection of the book from the dialog containing the results of the searched book
+resultContainer.addEventListener("click", (e) => {
+  const isReaded = readBtn.classList.contains("readed") ? true : false;
 
-// Manage the read and the remove button in the bookCard
+  const chosenBook = e.target.closest(".result-div");
+  const returnBtn = e.target.closest(".return");
+
+  // Controls whether the user chooses a book or goes back
+  if (chosenBook) {
+    const title = chosenBook.children[0].innerHTML; // .result-title
+    const author = chosenBook.children[1].innerHTML; // .result-author
+    const pages = chosenBook.children[2].innerHTML; // .result-pages
+    const img = chosenBook.children[3].src; // .result-img
+
+    addToLibrary(title, author, pages, img, isReaded);
+    resultsDialog.close();
+    appendBookInfo();
+  } else if (returnBtn) {
+    resultsDialog.close();
+    searchDialog.showModal();
+  }
+});
+
+// Manages the read and the remove button in the bookCard
 main.addEventListener("click", (e) => {
   const bookCard = e.target.closest(".book-card");
   const readIcon = e.target.closest(".read-icon");
@@ -68,26 +93,6 @@ main.addEventListener("click", (e) => {
     removeBook(bookCard);
   }
 });
-
-async function addBook(bookIndexPromise) {
-  const isReaded = readBtn.classList.contains("readed") ? true : false;
-
-  try {
-    await searchBook(titleInput.value, authorInput.value, isReaded, bookIndexPromise);
-
-    // Reset the inputs after every search
-    titleInput.value = "";
-    authorInput.value = "";
-
-    appendBookInfo();
-  } catch (error) {
-    console.error(error);
-    // open an error dialog if no results match the search
-    searchDialog.close();
-    resultsDialog.close();
-    errorDialog.showModal();
-  }
-}
 
 // Create the bookCard with the books in the library
 function appendBookInfo() {
@@ -142,6 +147,3 @@ function updateBookStatus(book, readIcon) {
 function toggleReaded(element) {
   element.classList.toggle("readed");
 }
-
-// I need the dialog div that show the books results in the library.js to add them in it
-export { resultContainer };
