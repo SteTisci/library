@@ -2,15 +2,6 @@ import { getBookInfo } from "./bookAPI.js";
 
 const library = [];
 
-// Book constructor
-function Book(title, author, pages, img, isReaded) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.img = img;
-  this.isReaded = isReaded;
-}
-
 // Send the request to the API and retrive all the results of the searched book
 async function getBookResults(title, author) {
   try {
@@ -52,7 +43,7 @@ function showResults(bookResults) {
 
 function addToLibrary(title, author, pages, img, isReaded) {
   const index = library.length;
-  library[index] = new Book(title, author, pages, img, isReaded);
+  library[index] = { title, author, pages, img, isReaded };
 }
 
 export { library, getBookResults, showResults, addToLibrary };
